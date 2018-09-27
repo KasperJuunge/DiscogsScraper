@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2016
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discogs_Scraper", "Discogs_Scraper\Discogs_Scraper.csproj", "{25FCC08C-BC55-4F17-9EA9-F3B4EC9505C0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{25FCC08C-BC55-4F17-9EA9-F3B4EC9505C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25FCC08C-BC55-4F17-9EA9-F3B4EC9505C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25FCC08C-BC55-4F17-9EA9-F3B4EC9505C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25FCC08C-BC55-4F17-9EA9-F3B4EC9505C0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7958D607-7F64-482E-80A1-53FD6B4E3651}
+	EndGlobalSection
+EndGlobal
