@@ -1,0 +1,11 @@
+C:\Users\Kasper\Documents\code\Discogs_Scraper\Discogs_Scraper\obj\Debug\Discogs_Scraper.csprojAssemblyReference.cache
+C:\Users\Kasper\Documents\code\Discogs_Scraper\Discogs_Scraper\obj\Debug\Discogs_Scraper.csproj.CoreCompileInputs.cache
+C:\Users\Kasper\Documents\code\Discogs_Scraper\Discogs_Scraper\bin\Debug\Discogs_Scraper.exe.config
+C:\Users\Kasper\Documents\code\Discogs_Scraper\Discogs_Scraper\bin\Debug\Discogs_Scraper.exe
+C:\Users\Kasper\Documents\code\Discogs_Scraper\Discogs_Scraper\bin\Debug\Discogs_Scraper.pdb
+C:\Users\Kasper\Documents\code\Discogs_Scraper\Discogs_Scraper\bin\Debug\HtmlAgilityPack.dll
+C:\Users\Kasper\Documents\code\Discogs_Scraper\Discogs_Scraper\bin\Debug\HtmlAgilityPack.pdb
+C:\Users\Kasper\Documents\code\Discogs_Scraper\Discogs_Scraper\bin\Debug\HtmlAgilityPack.xml
+C:\Users\Kasper\Documents\code\Discogs_Scraper\Discogs_Scraper\obj\Debug\Discogs_Scraper.csproj.CopyComplete
+C:\Users\Kasper\Documents\code\Discogs_Scraper\Discogs_Scraper\obj\Debug\Discogs_Scraper.exe
+C:\Users\Kasper\Documents\code\Discogs_Scraper\Discogs_Scraper\obj\Debug\Discogs_Scraper.pdb

@@ -6,64 +6,33 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using HtmlAgilityPack;
 
+
 namespace Discogs_Scraper
 {
     class Program
     {
         static void Main(string[] args)
         {
-            string baseUrl = "https://www.discogs.com";
+            // INIT
+            string startUrl = @"https://www.discogs.com/search/?limit=250&sort=have%2Cdesc&genre_exact=Jazz&page=1";
+            int numData = 1000;
+            //bool singleGenre = 1;
 
+            // CREATING SCRAPER
+            DiscogsScraper Scraper = new DiscogsScraper()
+            {
+                startUrl = startUrl,
+                numData = numData
+            };
+
+            Scraper.BeginScraping();
+
+            Console.ReadLine();
 
         }
     }
-
-    public class DiscogsScraper
-    {
-        private string startingPage; //Start page to begin scraping
-        private int numberOfReleases;
-
-        private HtmlDocument GetStartingPage(string url)
-        {
-
-            //return htmlDoc;
-        }
-        private string GetCoverImgUrl(HtmlNode htmlNode)
-        {
-            return imgUrl;
-        }
-        private string GetGenre(HtmlNode htmlNode)
-        {
-            return genre;
-        }
-        private string GetTitle(HtmlNode htmlNode)
-        {
-            return title;
-        }
-        private string GetReleaseYear(HtmlNode htmlNode)
-        {
-            return releaseYear;
-        }
-
-
-    }
-
-    public class DataBaseHandler
-    {
-
-           
-
-    }
-    
-    // Functions:
-    //      GetStartingPage(string url);
-    //      ScrapePages(int numberOfReleases, bool pureGenres);
-    //
-    //      GetGenre(HtmlDocument hmtlDoc);
-    //      GetTitle(HtmlDocument hmtlDoc);
-    //      GetReleaseYear(HtmlDocument hmtlDoc);
-    //      
-
 
 
 }
+
+
