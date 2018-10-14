@@ -15,6 +15,7 @@ namespace Discogs_Scraper
         {
             // INIT
             string startUrl = @"https://www.discogs.com/search/?limit=250&sort=have%2Cdesc&genre_exact=Jazz&page=1";
+            string genre = "Jazz";
             int numData = 1000;
             //bool singleGenre = 1;
 
@@ -22,6 +23,7 @@ namespace Discogs_Scraper
             DiscogsScraper Scraper = new DiscogsScraper()
             {
                 startUrl = startUrl,
+                genre = genre,
                 numData = numData
             };
 
