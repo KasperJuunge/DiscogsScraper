@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using HtmlAgilityPack;
+using System.Net;
 
 namespace Discogs_Scraper
 {
@@ -25,7 +26,7 @@ namespace Discogs_Scraper
             Console.WriteLine("Begin Scraping..");
             //CreateListingLinks(); // Get listing page links and stores them in listingLinks.txt
             //GetMultiGenreReleaseLinks();
-            GetSingleGenreData();
+            DownloadSingleGenreCovers();
 
 
         }
@@ -106,7 +107,65 @@ namespace Discogs_Scraper
             tw.Close();
 
         }
-      
+
+        private void DownloadSingleGenreCovers()
+        {
+            string currentlyProcessedLink, imgLink, fileName;
+            string coverDir = string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\{0}Covers\", genre);
+            int numOfLinks = File.ReadAllLines(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\multiGenreReleaseLinks.txt").Length;
+            int singleGenreCount = 0, multiGenreCount = 0, errorCount = 0;
+
+            TextReader tr = new StreamReader(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\multiGenreReleaseLinks.txt");
+
+            System.IO.Directory.CreateDirectory(coverDir); // Creates directory if it not already exists.
+            
+
+
+            Console.WriteLine("Downloading single genre covers to:" + coverDir);
+
+            for (int i = 1; i <= numOfLinks; i++)
+            {
+                /// Skal webClient laves hver gang?
+                WebClient webClient = new WebClient();
+                webClient.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
+
+                currentlyProcessedLink = tr.ReadLine();
+                Console.WriteLine("Currently processed link:" + currentlyProcessedLink);
+
+                try
+                {
+                    HtmlDocument doc = GetHtmlDoc(currentlyProcessedLink);
+                    if (IsSingleGenre(doc)) // Check if release has a single genre.
+                    {
+                        singleGenreCount++;
+                        imgLink = GetImgLink(doc);
+                        fileName = string.Format("{0}_Cover_{1}", genre, singleGenreCount);
+
+                        DownloadImgLink(imgLink, coverDir, fileName, webClient);
+
+                        Console.WriteLine("Single genre: {0}    Multi genre: {1}    Error count: {2}", singleGenreCount, multiGenreCount, errorCount);
+                        
+                    }
+                    else
+                    {
+                        multiGenreCount++;
+                    }
+
+
+                }
+                catch (System.Net.WebException)
+                {
+                    Console.WriteLine("An error occured! " + currentlyProcessedLink + "cover was not downloaded.");
+                    //i--; //if fail, go back 1 i.
+                    errorCount++;
+                    continue;
+                }
+            }
+
+            tr.Close();
+
+        }
+
         private void GetSingleGenreData()
         {
 
@@ -182,6 +241,31 @@ namespace Discogs_Scraper
                 return picLink;
             }
             return "Error in ExtractCoverImg-method";
+        }
+
+        private string GetImgLink(HtmlDocument doc)
+        {
+            HtmlNode imgNode = doc.DocumentNode.SelectSingleNode("//*[@id='page_content']/div[1]/div[1]/a/span[2]/img"); // Get img node
+            string imgHtml = imgNode.WriteTo();                 // Convert node to string
+            int indexStart = imgHtml.IndexOf("=") + 2;          // Define img link start index
+            int indexStop = imgHtml.IndexOf("alt=") - 2;        // Define img link stop index
+            int lenght = indexStop - indexStart;                // Calculate lenght of img link
+
+            return imgHtml.Substring(indexStart, lenght); // Cut out img link from html
+
+
+        }
+
+        private void DownloadImgLink(string imgLink, string coverDir, string fileName, WebClient webClient)
+        {
+            try
+            {
+                webClient.DownloadFile(imgLink, coverDir + fileName + ".jpg");
+            }
+            catch (System.ArgumentException)
+            {
+                Console.WriteLine("There was an error downloading a cover.");
+            }
         }
 
     }
