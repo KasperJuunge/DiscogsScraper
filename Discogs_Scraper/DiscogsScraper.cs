@@ -19,22 +19,48 @@ namespace Discogs_Scraper
             this.numData = numData;
             this.genre = genre;
         }
-
+            
         // TRIGGER FUNCTION
         public void BeginScraping()
         {
-            Console.WriteLine("Begin Scraping..");
-            //CreateListingLinks(); // Get listing page links and stores them in listingLinks.txt
-            //GetMultiGenreReleaseLinks();
+            Console.WriteLine("Defining folders and directory names required.. ");
+            Console.WriteLine("");
+            string listingLinksFile = string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\listingLinks_{0}.txt", genre);
+            string multiGenreFile = string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\multiGenreReleaseLinks_{0}.txt", genre);
+            
+
+            Console.WriteLine(string.Format("Begin scraping {0} releases..", genre));
+            Console.WriteLine("");
+            CreateListingLinks(); // Get listing page links and stores them in listingLinks.txt
+            GetMultiGenreReleaseLinks();
             DownloadSingleGenreCovers();
 
 
         }
+        private void CreateListingLinks()
+        {
+            //Function: creates number of listing-pages needed to scrape numData links. The links are saved to a file as they are obtained.
 
+            Console.WriteLine("Creating listing links.."); // User message
+            int numPages = numData / 250; // Calculates the number of listingpages to scrape to achieve numData datapoints. (Assumes that one listing page has 250 releases)
+            int lastIndex = startUrl.Length - 1;
+            startUrl = startUrl.Remove(lastIndex, 1) + "{0}";
+
+            TextWriter tw = new StreamWriter(string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\listingLinks_{0}.txt", genre));
+            for (int i = 1; i <= numPages; i++) // Create urls
+            {
+                string url = string.Format(startUrl, i);
+                tw.WriteLine(url);
+
+            }
+
+            tw.Close();
+
+        }
         private void GetMultiGenreReleaseLinks()
         {
-            TextReader tr = new StreamReader(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\listingLinks.txt");
-            TextWriter tw = new StreamWriter(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\multiGenreReleaseLinks.txt");
+            TextReader tr = new StreamReader(string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\listingLinks_{0}.txt", genre));
+            TextWriter tw = new StreamWriter(string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\multiGenreReleaseLinks_{0}.txt", genre));
             int numberOfLinks = 0;
             string currentlyProcessedLink;
             string xPath;
@@ -74,51 +100,22 @@ namespace Discogs_Scraper
 
             }
 
+            tw.Close();
             tr.Close();
 
 
         }
-
-        private HtmlDocument GetHtmlDoc(string url)
-        {
-            HtmlWeb hw = new HtmlWeb();
-            HtmlDocument doc = hw.Load(url);
-
-            return doc;
-        }
-
-        private void CreateListingLinks()
-        {
-            //Function: creates number of listing-pages needed to scrape numData links. The links are saved to a file as they are obtained.
-
-            Console.WriteLine("Creating listing links.."); // User message
-            int numPages = numData / 250; // Calculates the number of listingpages to scrape to achieve numData datapoints. (Assumes that one listing page has 250 releases)
-            int lastIndex = startUrl.Length - 1; 
-            startUrl = startUrl.Remove(lastIndex, 1) + "{0}";
-
-            TextWriter tw = new StreamWriter(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\listingLinks.txt");
-            for (int i = 1; i <= numPages; i++ ) // Create urls
-            {
-                string url = string.Format(startUrl, i);
-                tw.WriteLine(url);
-                
-            }
-
-            tw.Close();
-
-        }
-
         private void DownloadSingleGenreCovers()
         {
             string currentlyProcessedLink, imgLink, fileName;
             string coverDir = string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\{0}Covers\", genre);
-            int numOfLinks = File.ReadAllLines(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\multiGenreReleaseLinks.txt").Length;
+            int numOfLinks = File.ReadAllLines(string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\multiGenreReleaseLinks_{0}.txt", genre)).Length;
             int singleGenreCount = 0, multiGenreCount = 0, errorCount = 0;
 
-            TextReader tr = new StreamReader(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\multiGenreReleaseLinks.txt");
+            TextReader tr = new StreamReader(string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\multiGenreReleaseLinks_{0}.txt", genre));
 
             System.IO.Directory.CreateDirectory(coverDir); // Creates directory if it not already exists.
-            
+
 
 
             Console.WriteLine("Downloading single genre covers to:" + coverDir);
@@ -144,7 +141,7 @@ namespace Discogs_Scraper
                         DownloadImgLink(imgLink, coverDir, fileName, webClient);
 
                         Console.WriteLine("Single genre: {0}    Multi genre: {1}    Error count: {2}", singleGenreCount, multiGenreCount, errorCount);
-                        
+
                     }
                     else
                     {
@@ -166,6 +163,13 @@ namespace Discogs_Scraper
 
         }
 
+        private HtmlDocument GetHtmlDoc(string url)
+        {
+            HtmlWeb hw = new HtmlWeb();
+            HtmlDocument doc = hw.Load(url);
+
+            return doc;
+        }
         private void GetSingleGenreData()
         {
 
@@ -214,7 +218,6 @@ namespace Discogs_Scraper
             tw.Close();
             twIMG.Close();
         }
-
         private bool IsSingleGenre(HtmlDocument doc)
         {
             if (doc.DocumentNode.SelectSingleNode("//*[@id='page_content']/div[1]/div[3]/div[2]/a[2]") == null)
@@ -226,7 +229,6 @@ namespace Discogs_Scraper
                 return false;
             }
         }
-
         private string ExtractCoverImg(HtmlDocument doc)
         {
             // Extracting cover img link
@@ -242,7 +244,6 @@ namespace Discogs_Scraper
             }
             return "Error in ExtractCoverImg-method";
         }
-
         private string GetImgLink(HtmlDocument doc)
         {
             HtmlNode imgNode = doc.DocumentNode.SelectSingleNode("//*[@id='page_content']/div[1]/div[1]/a/span[2]/img"); // Get img node
@@ -255,7 +256,6 @@ namespace Discogs_Scraper
 
 
         }
-
         private void DownloadImgLink(string imgLink, string coverDir, string fileName, WebClient webClient)
         {
             try
