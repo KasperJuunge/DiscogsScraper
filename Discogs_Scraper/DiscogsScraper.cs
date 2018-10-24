@@ -23,18 +23,16 @@ namespace Discogs_Scraper
         // TRIGGER FUNCTION
         public void BeginScraping()
         {
-            Console.WriteLine("Defining folders and directory names required.. ");
-            Console.WriteLine("");
-            string listingLinksFile = string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\listingLinks_{0}.txt", genre);
-            string multiGenreFile = string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\multiGenreReleaseLinks_{0}.txt", genre);
             
+            WelcomeMessage();
 
+            
             Console.WriteLine(string.Format("Begin scraping {0} releases..", genre));
             Console.WriteLine("");
-            CreateListingLinks(); // Get listing page links and stores them in listingLinks.txt
-            GetMultiGenreReleaseLinks();
-            DownloadSingleGenreCovers();
 
+            CreateListingLinks(); 
+            GetMultiGenreReleaseLinks(); 
+            DownloadSingleGenreCovers();
 
         }
         private void CreateListingLinks()
@@ -46,7 +44,8 @@ namespace Discogs_Scraper
             int lastIndex = startUrl.Length - 1;
             startUrl = startUrl.Remove(lastIndex, 1) + "{0}";
 
-            TextWriter tw = new StreamWriter(string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\listingLinks_{0}.txt", genre));
+            
+            TextWriter tw = new StreamWriter(string.Format(@"C:\Users\kaspe\Documents\Code\Discogs_Scraper\listingLinks_{0}.txt", genre));
             for (int i = 1; i <= numPages; i++) // Create urls
             {
                 string url = string.Format(startUrl, i);
@@ -59,8 +58,8 @@ namespace Discogs_Scraper
         }
         private void GetMultiGenreReleaseLinks()
         {
-            TextReader tr = new StreamReader(string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\listingLinks_{0}.txt", genre));
-            TextWriter tw = new StreamWriter(string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\multiGenreReleaseLinks_{0}.txt", genre));
+            TextReader tr = new StreamReader(string.Format(@"C:\Users\kaspe\Documents\Code\Discogs_Scraper\listingLinks_{0}.txt", genre));
+            TextWriter tw = new StreamWriter(string.Format(@"C:\Users\kaspe\Documents\Code\Discogs_Scraper\multiGenreReleaseLinks_{0}.txt", genre));
             int numberOfLinks = 0;
             string currentlyProcessedLink;
             string xPath;
@@ -90,7 +89,7 @@ namespace Discogs_Scraper
 
                     }
                 }
-                catch (System.Net.WebException)
+                catch (System.Net.WebException )
                 {
                     Console.WriteLine("Error!");
                     i = i - 1; //if fail, go back 1 i.
@@ -108,11 +107,11 @@ namespace Discogs_Scraper
         private void DownloadSingleGenreCovers()
         {
             string currentlyProcessedLink, imgLink, fileName;
-            string coverDir = string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\{0}Covers\", genre);
-            int numOfLinks = File.ReadAllLines(string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\multiGenreReleaseLinks_{0}.txt", genre)).Length;
+            string coverDir = string.Format(@"C:\Users\kaspe\Documents\Code\Discogs_Scraper\{0}Covers\", genre);
+            int numOfLinks = File.ReadAllLines(string.Format(@"C:\Users\kaspe\Documents\Code\Discogs_Scraper\multiGenreReleaseLinks_{0}.txt", genre)).Length;
             int singleGenreCount = 0, multiGenreCount = 0, errorCount = 0;
 
-            TextReader tr = new StreamReader(string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\multiGenreReleaseLinks_{0}.txt", genre));
+            TextReader tr = new StreamReader(string.Format(@"C:\Users\kaspe\Documents\Code\Discogs_Scraper\multiGenreReleaseLinks_{0}.txt", genre));
 
             System.IO.Directory.CreateDirectory(coverDir); // Creates directory if it not already exists.
 
@@ -267,24 +266,24 @@ namespace Discogs_Scraper
                 Console.WriteLine("There was an error downloading a cover.");
             }
         }
-
+        private void WelcomeMessage()
+        {
+            //Welcome message
+            Console.WriteLine("Welcome to the Discogs scraper. This program scrapes discogs for album covers.");
+            Console.WriteLine("The input to the program is a 'Discogs Explore'-page with show set to 250.");
+            Console.WriteLine("NOW let's get started!");
+            Console.WriteLine("");
+        }
+   
     }
 }
 
 
 
 
-//private bool CheckForSingleGenre()
-//{
-//    Console.WriteLine("Checking if the release has a single or multiple genres.");
-//}
-
-// DiscogsScraper Method: GetHtml();
-// DiscogsScraper Method: GetReleaseLinks();
-// DiscogsScraper Method: DownloadImage();
-// DiscogsScraper Method: DetectNumberOfReleasesOnListingPage();
-
-
-// Release Method: Release.CheckForSingleGenre();
-// Release Method: Release.GetData();
+// TODO:
+//Console.WriteLine("Defining folders and directory names required.. ");
+//Console.WriteLine("");
+//string listingLinksFile = string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\listingLinks_{0}.txt", genre);
+//string multiGenreFile = string.Format(@"C:\Users\Kasper\Documents\code\Discogs_Scraper\multiGenreReleaseLinks_{0}.txt", genre);
 
