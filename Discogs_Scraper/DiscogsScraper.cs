@@ -30,9 +30,10 @@ namespace Discogs_Scraper
             Console.WriteLine(string.Format("Begin scraping {0} releases..", genre));
             Console.WriteLine("");
 
-            CreateListingLinks(); 
-            GetMultiGenreReleaseLinks(); 
-            DownloadSingleGenreCovers();
+            //CreateListingLinks(); 
+            //GetMultiGenreReleaseLinks(); 
+            //DownloadSingleGenreCovers();
+            DownloadAllCovers();
 
         }
         private void CreateListingLinks()
@@ -42,8 +43,8 @@ namespace Discogs_Scraper
             Console.WriteLine("Creating listing links.."); // User message
             int numPages = numData / 250; // Calculates the number of listingpages to scrape to achieve numData datapoints. (Assumes that one listing page has 250 releases)
             int lastIndex = startUrl.Length - 1;
-            startUrl = startUrl.Remove(lastIndex, 1) + "{0}";
-
+            //startUrl = startUrl.Remove(lastIndex, 1) + "{0}";
+            
             
             TextWriter tw = new StreamWriter(string.Format(@"C:\Users\kaspe\Documents\Code\Discogs_Scraper\listingLinks_{0}.txt", genre));
             for (int i = 1; i <= numPages; i++) // Create urls
@@ -54,7 +55,7 @@ namespace Discogs_Scraper
             }
 
             tw.Close();
-
+            
         }
         private void GetMultiGenreReleaseLinks()
         {
@@ -89,7 +90,7 @@ namespace Discogs_Scraper
 
                     }
                 }
-                catch (System.Net.WebException )
+                catch (System.Net.WebException)
                 {
                     Console.WriteLine("Error!");
                     i = i - 1; //if fail, go back 1 i.
@@ -160,6 +161,58 @@ namespace Discogs_Scraper
 
             tr.Close();
 
+        }
+        private void DownloadAllCovers()
+        {
+
+            string currentlyProcessedLink, imgLink, fileName;
+            string coverDir = string.Format(@"C:\Users\kaspe\Documents\Code\Discogs_Scraper\{0}Covers\", genre);
+            int numOfLinks = File.ReadAllLines(string.Format(@"C:\Users\kaspe\Documents\Code\Discogs_Scraper\multiGenreReleaseLinks_{0}_MASTER.txt", genre)).Length;
+            int errorCount = 0;
+
+            TextReader tr = new StreamReader(string.Format(@"C:\Users\kaspe\Documents\Code\Discogs_Scraper\multiGenreReleaseLinks_{0}.txt", genre));
+            System.IO.Directory.CreateDirectory(coverDir); // Creates directory if it not already exists.
+            Console.WriteLine("Downloading covers to:" + coverDir);
+
+
+            for (int i = 6033; i <= numOfLinks; i++) // 5397
+            {
+
+                // Skal webClient laves hver gang?
+
+                WebClient webClient = new WebClient();
+                webClient.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
+
+                currentlyProcessedLink = tr.ReadLine();
+                Console.WriteLine("Currently processed link:" + currentlyProcessedLink);
+
+                try
+                {
+                    
+                    HtmlDocument doc = GetHtmlDoc(currentlyProcessedLink);
+                    
+                    //coverCount++;
+                    imgLink = GetImgLink(doc);
+                    fileName = string.Format("{0}_Cover_{1}", genre, i);
+
+                    DownloadImgLink(imgLink, coverDir, fileName, webClient);
+
+                    Console.WriteLine("Covers downloaded: {0}    Error count: {1}", i, errorCount);
+
+
+
+                }
+                catch (System.Net.WebException)
+                {
+                    Console.WriteLine("An error occured! " + currentlyProcessedLink + "cover was not downloaded.");
+                    //i--; //if fail, go back 1 i.
+                    errorCount++;
+                    continue;
+                }
+            }
+
+            tr.Close();
+            
         }
 
         private HtmlDocument GetHtmlDoc(string url)
@@ -246,12 +299,20 @@ namespace Discogs_Scraper
         private string GetImgLink(HtmlDocument doc)
         {
             HtmlNode imgNode = doc.DocumentNode.SelectSingleNode("//*[@id='page_content']/div[1]/div[1]/a/span[2]/img"); // Get img node
-            string imgHtml = imgNode.WriteTo();                 // Convert node to string
-            int indexStart = imgHtml.IndexOf("=") + 2;          // Define img link start index
-            int indexStop = imgHtml.IndexOf("alt=") - 2;        // Define img link stop index
-            int lenght = indexStop - indexStart;                // Calculate lenght of img link
+            try
+            {
+                string imgHtml = imgNode.WriteTo();                 // Convert node to string
+                int indexStart = imgHtml.IndexOf("=") + 2;          // Define img link start index
+                int indexStop = imgHtml.IndexOf("alt=") - 2;        // Define img link stop index
+                int lenght = indexStop - indexStart;                // Calculate lenght of img link
 
-            return imgHtml.Substring(indexStart, lenght); // Cut out img link from html
+                return imgHtml.Substring(indexStart, lenght); // Cut out img link from html
+            }
+            catch(System.NullReferenceException)
+            {
+                return "https://vignette.wikia.nocookie.net/battlefordreamisland/images/4/41/Green_square.jpg/revision/latest?cb=20180407132336";
+            }
+
 
 
         }

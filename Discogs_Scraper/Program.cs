@@ -10,8 +10,8 @@ namespace Discogs_Scraper
         static void Main(string[] args)
         {
             // INIT
-            string startUrl = @"https://www.discogs.com/search/?limit=250&sort=have%2Cdesc&format_exact%5B0%5D%5B%5D=Vinyl&format_exact%5B0%5D%5B%5D=LP&format_exact%5B%5D=Album&genre_exact=Pop&page=1";
-            string genre = "Pop";
+            string startUrl = @"https://www.discogs.com/search/?sort=have%2Cdesc&format_exact=LP&limit=250&page={0}&decade=1980";
+            string genre = "80s";
             int numData = 10000;
 
             // FUNK - MOST COLLECTED - LPs/VINYL/ALBUM https://www.discogs.com/search/?sort=have%2Cdesc&format_exact=LP&format_exact=Vinyl&format_exact=Album&genre_exact=Funk+%2F+Soul&limit=250&page=1
@@ -19,6 +19,9 @@ namespace Discogs_Scraper
             // POP - MOST COLLECTED - LPs/VINYL/ALBUM  https://www.discogs.com/search/?limit=250&sort=have%2Cdesc&format_exact%5B0%5D%5B%5D=Vinyl&format_exact%5B0%5D%5B%5D=LP&format_exact%5B%5D=Album&genre_exact=Pop&page=1
             // HIP HOP - MOST COLLECTED - LPs/VINYL/ALBUM  https://www.discogs.com/search/?sort=have%2Cdesc&format_exact=LP&format_exact=Vinyl&format_exact=Album&genre_exact=Hip+Hop&limit=250&page=1            
 
+            // 60s MOST COLLECTED VINYL LP https://www.discogs.com/search/?sort=have%2Cdesc&format_exact=LP&limit=250&page={0}&decade=1960
+            // 70s MOST COLLECTED VINYL LP https://www.discogs.com/search/?sort=have%2Cdesc&format_exact=LP&limit=250&page={0}&decade=1970
+            // 80s MOST COLLECTED VINYL LP https://www.discogs.com/search/?sort=have%2Cdesc&format_exact=LP&limit=250&page={0}&decade=1980
 
             // CREATING SCRAPER
             DiscogsScraper Scraper = new DiscogsScraper()
