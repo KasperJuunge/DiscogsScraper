@@ -1,1 +1,1 @@
-"# discogs_scraper" 
+Bette documentation is coming :)
